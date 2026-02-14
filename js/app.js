@@ -1007,6 +1007,7 @@ function startBettingRound() {
 		sliderOutput.classList.remove("hidden");
 
 		const needToCall = currentBet - player.roundBet;
+		const minBet = Math.min(needToCall, player.chips);
 
 		// UI: prepare slider and buttons
 		if (currentPhaseIndex > 0 && currentBet === 0) {
@@ -1018,7 +1019,6 @@ function startBettingRound() {
 			sliderOutput.value = 0;
 		} else {
 			// Determine minimum bet as the lesser of needToCall and player chips
-			const minBet = Math.min(needToCall, player.chips);
 			amountSlider.min = 0;
 			amountSlider.max = player.chips;
 			amountSlider.step = 1;
@@ -1039,33 +1039,48 @@ function startBettingRound() {
 			const minRaise = needToCall + lastRaise;
 			// Only flag *raises* that fall below the minimum‑raise threshold
 			const isInvalidRaise = val > needToCall && val < minRaise && val < player.chips;
-			let strWho = "";
-			if (players.filter((p) => !p.isBot).length > 1) {
-				strWho = player.name + ": ";
-			}
 			if (isInvalidRaise) {
 				sliderOutput.classList.add("invalid");
 			} else {
 				sliderOutput.classList.remove("invalid");
 			}
-			if (val === 0) {
+			// Only flag *bet* that fall below the minimum‑raise threshold
+			const isInvalidBet = val < minBet;
+			if (isInvalidBet) {
+				sliderOutput.classList.add("invalid");
+			} else {
+				sliderOutput.classList.remove("invalid");
+			}
+			let strWho = "";
+			if (players.filter((p) => !p.isBot).length > 1) {
+				strWho = player.name + ": ";
+			}
+			if (val === 0 && needToCall === 0) {
 				actionButton.textContent = strWho + "Check";
 			} else if (val === player.chips) {
 				actionButton.textContent = strWho + "All-In";
 			} else if (val === needToCall) {
 				actionButton.textContent = strWho + "Call";
+			} else if (val < minBet) {
+				actionButton.textContent = strWho + "< Call";
 			} else {
 				actionButton.textContent = strWho + "Raise";
 			}
 		}
 		// Snap slider to min-raise on change if needed
 		function onSliderChange() {
+			let isToSnap = false;
 			const valSlider = parseInt(amountSlider.value, 10);
 			let val = valSlider
 			if (valSlider < player.chips) {
-				val = Math.floor(valSlider / 10) * 10;
+				if (valSlider < minBet) {
+					val = minBet;
+				} else {
+					val = Math.floor(valSlider / 10) * 10;
+				}	
 				amountSlider.value = val;
 				sliderOutput.value = val;
+				isToSnap = true;
 			}
 
 			const minRaise = needToCall + lastRaise;
@@ -1074,6 +1089,10 @@ function startBettingRound() {
 				amountSlider.value = minRaise;
 				sliderOutput.value = minRaise;
 				sliderOutput.classList.remove("invalid");
+				isToSnap = true;
+			}
+
+			if (isToSnap) {
 				onSliderInput(); // refresh button label & invalid state
 			}
 		}
@@ -1672,7 +1691,7 @@ poker.init();
  * - AUTO_RELOAD_ON_SW_UPDATE: reload page once after an update
  -------------------------------------------------------------------------------------------------- */
 const USE_SERVICE_WORKER = true;
-const SERVICE_WORKER_VERSION = "2026-02-14-v1257";
+const SERVICE_WORKER_VERSION = "2026-02-14-v1330";
 const AUTO_RELOAD_ON_SW_UPDATE = true;
 
 /* --------------------------------------------------------------------------------------------------
