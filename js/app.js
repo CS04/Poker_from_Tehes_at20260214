@@ -1032,19 +1032,23 @@ function startBettingRound() {
 			const minRaise = needToCall + lastRaise;
 			// Only flag *raises* that fall below the minimum‑raise threshold
 			const isInvalidRaise = val > needToCall && val < minRaise && val < player.chips;
+			let strWho = "";
+			if (players.filter((p) => !p.isBot).length > 1) {
+				strWho = player.name + ": ";
+			}
 			if (isInvalidRaise) {
 				sliderOutput.classList.add("invalid");
 			} else {
 				sliderOutput.classList.remove("invalid");
 			}
 			if (val === 0) {
-				actionButton.textContent = "Check";
+				actionButton.textContent = strWho + "Check";
 			} else if (val === player.chips) {
-				actionButton.textContent = "All-In";
+				actionButton.textContent = strWho + "All-In";
 			} else if (val === needToCall) {
-				actionButton.textContent = "Call";
+				actionButton.textContent = strWho + "Call";
 			} else {
-				actionButton.textContent = "Raise";
+				actionButton.textContent = strWho + "Raise";
 			}
 		}
 		// Snap slider to min-raise on change if needed
@@ -1654,7 +1658,7 @@ poker.init();
  * - AUTO_RELOAD_ON_SW_UPDATE: reload page once after an update
  -------------------------------------------------------------------------------------------------- */
 const USE_SERVICE_WORKER = true;
-const SERVICE_WORKER_VERSION = "2026-02-08-v3";
+const SERVICE_WORKER_VERSION = "2026-02-14-v1127";
 const AUTO_RELOAD_ON_SW_UPDATE = true;
 
 /* --------------------------------------------------------------------------------------------------
