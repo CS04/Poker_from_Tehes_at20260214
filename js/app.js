@@ -1013,22 +1013,29 @@ function startBettingRound() {
 			// First bet post-flop: allow Check (0) or at least big blind
 			amountSlider.min = 0;
 			amountSlider.max = player.chips;
-			amountSlider.step = 10;
+			amountSlider.step = 1;
 			amountSlider.value = 0;
 			sliderOutput.value = 0;
 		} else {
 			// Determine minimum bet as the lesser of needToCall and player chips
 			const minBet = Math.min(needToCall, player.chips);
-			amountSlider.min = minBet;
+			amountSlider.min = 0;
 			amountSlider.max = player.chips;
-			amountSlider.step = 10;
+			amountSlider.step = 1;
 			amountSlider.value = minBet;
 			sliderOutput.value = minBet;
 		}
 
 		// Update button label on slider input
 		function onSliderInput() {
-			const val = parseInt(amountSlider.value, 10);
+			const valSlider = parseInt(amountSlider.value, 10);
+			let val = valSlider
+			if (valSlider < player.chips) {
+				val = Math.floor(valSlider / 10) * 10;
+				amountSlider.value = val;
+				sliderOutput.value = val;
+			}
+
 			const minRaise = needToCall + lastRaise;
 			// Only flag *raises* that fall below the minimum‑raise threshold
 			const isInvalidRaise = val > needToCall && val < minRaise && val < player.chips;
@@ -1053,7 +1060,14 @@ function startBettingRound() {
 		}
 		// Snap slider to min-raise on change if needed
 		function onSliderChange() {
-			const val = parseInt(amountSlider.value, 10);
+			const valSlider = parseInt(amountSlider.value, 10);
+			let val = valSlider
+			if (valSlider < player.chips) {
+				val = Math.floor(valSlider / 10) * 10;
+				amountSlider.value = val;
+				sliderOutput.value = val;
+			}
+
 			const minRaise = needToCall + lastRaise;
 			// If value is between Call and Min‑Raise, snap to minRaise
 			if (val > needToCall && val < minRaise) {
@@ -1658,7 +1672,7 @@ poker.init();
  * - AUTO_RELOAD_ON_SW_UPDATE: reload page once after an update
  -------------------------------------------------------------------------------------------------- */
 const USE_SERVICE_WORKER = true;
-const SERVICE_WORKER_VERSION = "2026-02-14-v1146";
+const SERVICE_WORKER_VERSION = "2026-02-14-v1257";
 const AUTO_RELOAD_ON_SW_UPDATE = true;
 
 /* --------------------------------------------------------------------------------------------------
