@@ -14,6 +14,7 @@ const closeButtons = document.querySelectorAll(".close");
 const notification = document.querySelector("#notification");
 const foldButton = document.querySelector("#fold-button");
 const actionButton = document.querySelector("#action-button");
+const potElem = document.querySelector("#pot");
 const amountSlider = document.querySelector("#amount-slider");
 const sliderOutput = document.querySelector("output");
 const Phases = ["preflop", "flop", "turn", "river", "showdown"];
@@ -1030,7 +1031,7 @@ function startBettingRound() {
 		function onSliderInput() {
 			const valSlider = parseInt(amountSlider.value, 10);
 			let val = valSlider
-			if (valSlider < player.chips) {
+			if (valSlider !== minBet && valSlider !== player.chips) {
 				val = Math.floor(valSlider / 10) * 10;
 				amountSlider.value = val;
 				sliderOutput.value = val;
@@ -1069,7 +1070,6 @@ function startBettingRound() {
 		}
 		// Snap slider to min-raise on change if needed
 		function onSliderChange() {
-			let isToSnap = false;
 			const valSlider = parseInt(amountSlider.value, 10);
 			let val = valSlider
 			if (valSlider < player.chips) {
@@ -1080,7 +1080,12 @@ function startBettingRound() {
 				}	
 				amountSlider.value = val;
 				sliderOutput.value = val;
-				isToSnap = true;
+			}
+			else {
+				val = player.chips;
+				amountSlider.value = val;
+				sliderOutput.value = val;
+				sliderOutput.classList.remove("invalid");
 			}
 
 			const minRaise = needToCall + lastRaise;
@@ -1089,15 +1094,22 @@ function startBettingRound() {
 				amountSlider.value = minRaise;
 				sliderOutput.value = minRaise;
 				sliderOutput.classList.remove("invalid");
-				isToSnap = true;
 			}
 
-			if (isToSnap) {
-				onSliderInput(); // refresh button label & invalid state
-			}
+			onSliderInput(); // refresh button label & invalid state
+		}
+		// Snap slider one step
+		function onPotClickMinMove() {
+			const valSlider = parseInt(amountSlider.value, 10);
+			let val = valSlider + 10;
+			amountSlider.value = val;
+			sliderOutput.value = val;
+			
+			onSliderChange();
 		}
 		amountSlider.addEventListener("input", onSliderInput);
 		amountSlider.addEventListener("change", onSliderChange);
+		potElem.addEventListener("click", onPotClickMinMove);
 		onSliderInput();
 
 		// Event handlers
@@ -1110,6 +1122,7 @@ function startBettingRound() {
 			player.seat.classList.remove("active");
 			amountSlider.removeEventListener("input", onSliderInput);
 			amountSlider.removeEventListener("change", onSliderChange);
+			potElem.removeEventListener("click", onPotClickMinMove);
 
 			// Handle action types
 			if (bet === 0) {
@@ -1186,6 +1199,7 @@ function startBettingRound() {
 			player.seat.classList.remove("active");
 			amountSlider.removeEventListener("input", onSliderInput);
 			amountSlider.removeEventListener("change", onSliderChange);
+			potElem.removeEventListener("click", onPotClickMinMove);
 			foldButton.removeEventListener("click", onFold);
 			actionButton.removeEventListener("click", onAction);
 			// Decide whether to continue the betting loop or advance the phase
@@ -1691,7 +1705,7 @@ poker.init();
  * - AUTO_RELOAD_ON_SW_UPDATE: reload page once after an update
  -------------------------------------------------------------------------------------------------- */
 const USE_SERVICE_WORKER = true;
-const SERVICE_WORKER_VERSION = "2026-02-14-v1330";
+const SERVICE_WORKER_VERSION = "2026-02-14-v1430";
 const AUTO_RELOAD_ON_SW_UPDATE = true;
 
 /* --------------------------------------------------------------------------------------------------
