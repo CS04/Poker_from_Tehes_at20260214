@@ -1658,7 +1658,7 @@ poker.init();
  * - AUTO_RELOAD_ON_SW_UPDATE: reload page once after an update
  -------------------------------------------------------------------------------------------------- */
 const USE_SERVICE_WORKER = true;
-const SERVICE_WORKER_VERSION = "2026-02-14-v1127";
+const SERVICE_WORKER_VERSION = "2026-02-14-v1146";
 const AUTO_RELOAD_ON_SW_UPDATE = true;
 
 /* --------------------------------------------------------------------------------------------------
@@ -1745,7 +1745,7 @@ async function registerServiceWorker() {
 		registration.update();
 
 		console.log(
-			`Service Worker registered for project "${PROJECT_SLUG}" with scope:`,
+			`Service Worker `, SERVICE_WORKER_VERSION, ` registered for project "${PROJECT_SLUG}" with scope:`,
 			registration.scope,
 		);
 	} catch (error) {
