@@ -1,3 +1,13 @@
+# Preface by CS04
+This repository is a clone of 
+  https://github.com/Tehes/poker.git
+
+My intention is to learn how to work with GitHub. 
+
+https://cs04.github.io/Poker_from_Tehes_at20260214/
+
+
+
 # Digital Poker Table
 
 ![Demo screenshot](img/demo.jpeg)
