@@ -41,7 +41,7 @@ body {
     min-height: inherit;
     display: flex;
     flex-direction: column;
-    background-image: radial-gradient(var(--blue-lighter) 0%, var(--blue-lightest) 50%),
+    background-image: radial-gradient(var(--blue-lighter) 0%, var(--blue) 50%),
 url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAAAUVBMV…HwjTtUNAcMelOd4xpkoqiTYICWFq0JSiPfPDQdnt+4/wuqcXY47QILbgAAAABJRU5ErkJggg==");
     background-repeat: no-repeat, repeat;
     background-size: cover, auto;
@@ -265,7 +265,7 @@ TABLE-MIDDLE
 */
 
 #table-middle {
-    border: 2px solid black;
+    /* border: 2px solid black; */
     max-width: 67vw;
     /* max-height: 25vh; */
     display: flex;
@@ -319,7 +319,7 @@ TABLE-MIDDLE
 
 #community-cards {
     display: flex;
-    border: 2px solid black;
+    /* border: 2px solid black; */
     gap: 1%;
     place-items: center;
     max-width: 67vw;
